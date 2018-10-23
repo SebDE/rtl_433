@@ -144,7 +144,7 @@ static int ws2000_callback(bitbuffer_t *bitbuffer) {
         sprintf(buffer + strlen(buffer), "'in_pressure':  %d , ", 200+dec[10]*100+dec[9]*10+dec[8]);
     }
 
-    sprintf(buffer + strlen(buffer), " }");
+    sprintf(buffer + strlen(buffer), " }\n");
 
     fprintf(stdout,"%s", buffer);
 
