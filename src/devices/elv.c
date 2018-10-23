@@ -130,20 +130,23 @@ static int ws2000_callback(bitbuffer_t *bitbuffer) {
         if(debug_output) fprintf(stdout, "sum_received (%d) != sum_calculated (%d) ", sum_received, sum_calculated);
         return 0;
     }
+    char buffer [1024];
 
-    fprintf(stdout, "{\n");
-    fprintf(stdout, "'device':      'ELV WS2000'\n");
-    fprintf(stdout, "'protocol':    'ELV WS 2000, %d bits'\n",bitbuffer->bits_per_row[1]);
-    fprintf(stdout, "'type':        '%s'\n", dec[0]<=7?types[dec[0]]:"?");
-    fprintf(stdout, "'code':         %d\n", dec[1]&7);
-    fprintf(stdout, "'in_temp':         %s%d.%d\n", dec[1]&8?"-":"", dec[4]*10+dec[3], dec[2]);
-    fprintf(stdout, "'in_humidity':     %d.%d\n", dec[7]*10+dec[6], dec[5]);
+    sprintf(buffer, "{\n");
+    sprintf(buffer, "'device':      'ELV WS2000'\n");
+    sprintf(buffer, "'protocol':    'ELV WS 2000, %d bits'\n",bitbuffer->bits_per_row[1]);
+    sprintf(buffer, "'type':        '%s'\n", dec[0]<=7?types[dec[0]]:"?");
+    sprintf(buffer, "'code':         %d\n", dec[1]&7);
+    sprintf(buffer, "'in_temp':         %s%d.%d\n", dec[1]&8?"-":"", dec[4]*10+dec[3], dec[2]);
+    sprintf(buffer, "'in_humidity':     %d.%d\n", dec[7]*10+dec[6], dec[5]);
 
     if(dec[0]==4) {
-        fprintf(stdout, "'in_pressure':  %d\n", 200+dec[10]*100+dec[9]*10+dec[8]);
+        sprintf(buffer, "'in_pressure':  %d\n", 200+dec[10]*100+dec[9]*10+dec[8]);
     }
 
-    fprintf(stdout, "}\n");
+    sprintf(buffer, "}\n");
+
+    fprintf(stdout,"%s", buffer);
 
     return 1;
 }
