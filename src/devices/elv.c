@@ -53,14 +53,30 @@ static int em1000_callback(bitbuffer_t *bitbuffer) {
 //for (i = 0; i < bytes; i++) fprintf(stdout, "%02X ", dec[i]); fprintf(stdout, "\n");
 
     // based on 15_CUL_EM.pm
-    fprintf(stdout, "Energy sensor event:\n");
-    fprintf(stdout, "protocol      = ELV EM 1000, %d bits\n",bitbuffer->bits_per_row[1]);
-    fprintf(stdout, "type          = EM 1000-%s\n",dec[0]>=1&&dec[0]<=3?types[dec[0]-1]:"?");
-    fprintf(stdout, "code          = %d\n",dec[1]);
-    fprintf(stdout, "seqno         = %d\n",dec[2]);
-    fprintf(stdout, "total cnt     = %d\n",dec[3]|dec[4]<<8);
-    fprintf(stdout, "current cnt   = %d\n",dec[5]|dec[6]<<8);
-    fprintf(stdout, "peak cnt      = %d\n",dec[7]|dec[8]<<8);
+    fprintf(stdout, "{\n");
+    fprintf(stdout, "'device':      'ELV EM 1000'\n");
+    fprintf(stdout, "'protocol':    'ELV EM 1000, %d bits'\n",bitbuffer->bits_per_row[1]);
+    fprintf(stdout, "'type':        'EM 1000-%s'\n",dec[0]>=1&&dec[0]<=3?types[dec[0]-1]:"?");
+    fprintf(stdout, "'code':        %d\n",dec[1]);
+    fprintf(stdout, "'seqno':       %d\n",dec[2]);
+    fprintf(stdout, "'total cnt':   %d\n",dec[3]|dec[4]<<8);
+    fprintf(stdout, "'current cnt': %d\n",dec[5]|dec[6]<<8);
+    fprintf(stdout, "'peak cnt':    %d\n",dec[7]|dec[8]<<8);
+    fprintf(stdout, "}\n");
+
+
+
+    //fprintf(stdout, "Energy sensor event:\n");
+    //fprintf(stdout, "protocol      = ELV EM 1000, %d bits\n",bitbuffer->bits_per_row[1]);
+    //fprintf(stdout, "type          = EM 1000-%s\n",dec[0]>=1&&dec[0]<=3?types[dec[0]-1]:"?");
+    //fprintf(stdout, "code          = %d\n",dec[1]);
+    //fprintf(stdout, "seqno         = %d\n",dec[2]);
+    //fprintf(stdout, "total cnt     = %d\n",dec[3]|dec[4]<<8);
+    //fprintf(stdout, "current cnt   = %d\n",dec[5]|dec[6]<<8);
+    //fprintf(stdout, "peak cnt      = %d\n",dec[7]|dec[8]<<8);
+
+
+
 
     return 1;
 }
@@ -115,16 +131,19 @@ static int ws2000_callback(bitbuffer_t *bitbuffer) {
         return 0;
     }
 
+    fprintf(stdout, "{\n");
+    fprintf(stdout, "'device':      'ELV WS2000'\n");
+    fprintf(stdout, "'protocol':    'ELV WS 2000, %d bits'\n",bitbuffer->bits_per_row[1]);
+    fprintf(stdout, "'type':        '%s'\n", dec[0]<=7?types[dec[0]]:"?");
+    fprintf(stdout, "'code':         %d\n", dec[1]&7);
+    fprintf(stdout, "'temp':         %s%d.%d\n", dec[1]&8?"-":"", dec[4]*10+dec[3], dec[2]);
+    fprintf(stdout, "'humidity':     %d.%d\n", dec[7]*10+dec[6], dec[5]);
 
-    fprintf(stdout, "Weather station sensor event:\n");
-    fprintf(stdout, "protocol      = ELV WS 2000, %d bits\n",bitbuffer->bits_per_row[1]);
-    fprintf(stdout, "type (!=ToDo) = %s\n", dec[0]<=7?types[dec[0]]:"?");
-    fprintf(stdout, "code          = %d\n", dec[1]&7);
-    fprintf(stdout, "temp          = %s%d.%d\n", dec[1]&8?"-":"", dec[4]*10+dec[3], dec[2]);
-    fprintf(stdout, "humidity      = %d.%d\n", dec[7]*10+dec[6], dec[5]);
     if(dec[0]==4) {
-        fprintf(stdout, "pressure      = %d\n", 200+dec[10]*100+dec[9]*10+dec[8]);
+        fprintf(stdout, "'pressure':  %d\n", 200+dec[10]*100+dec[9]*10+dec[8]);
     }
+
+    fprintf(stdout, "}\n");
 
     return 1;
 }
