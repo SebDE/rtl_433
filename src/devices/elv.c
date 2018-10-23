@@ -133,18 +133,18 @@ static int ws2000_callback(bitbuffer_t *bitbuffer) {
     char buffer [1024];
 
     sprintf(buffer, "{\n");
-    sprintf(buffer, "'device':      'ELV WS2000'\n");
-    sprintf(buffer, "'protocol':    'ELV WS 2000, %d bits'\n",bitbuffer->bits_per_row[1]);
-    sprintf(buffer, "'type':        '%s'\n", dec[0]<=7?types[dec[0]]:"?");
-    sprintf(buffer, "'code':         %d\n", dec[1]&7);
-    sprintf(buffer, "'in_temp':         %s%d.%d\n", dec[1]&8?"-":"", dec[4]*10+dec[3], dec[2]);
-    sprintf(buffer, "'in_humidity':     %d.%d\n", dec[7]*10+dec[6], dec[5]);
+    sprintf(buffer + strlen(buffer), "'device':      'ELV WS2000'\n");
+    sprintf(buffer + strlen(buffer), "'protocol':    'ELV WS 2000, %d bits'\n",bitbuffer->bits_per_row[1]);
+    sprintf(buffer + strlen(buffer), "'type':        '%s'\n", dec[0]<=7?types[dec[0]]:"?");
+    sprintf(buffer + strlen(buffer), "'code':         %d\n", dec[1]&7);
+    sprintf(buffer + strlen(buffer), "'in_temp':         %s%d.%d\n", dec[1]&8?"-":"", dec[4]*10+dec[3], dec[2]);
+    sprintf(buffer + strlen(buffer), "'in_humidity':     %d.%d\n", dec[7]*10+dec[6], dec[5]);
 
     if(dec[0]==4) {
-        sprintf(buffer, "'in_pressure':  %d\n", 200+dec[10]*100+dec[9]*10+dec[8]);
+        sprintf(buffer + strlen(buffer), "'in_pressure':  %d\n", 200+dec[10]*100+dec[9]*10+dec[8]);
     }
 
-    sprintf(buffer, "}\n");
+    sprintf(buffer + strlen(buffer), "}\n");
 
     fprintf(stdout,"%s", buffer);
 
